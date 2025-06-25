@@ -1,4 +1,6 @@
 import { Page, Locator, expect } from "@playwright/test";
+import { SignupPageLocators } from "../fixtures/locators/signup.page";
+import { CommonPopupLocators } from "../fixtures/locators/popup.locators";
 
 export class SignupPage {
   readonly page: Page;
@@ -11,12 +13,12 @@ export class SignupPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.firstName = page.getByTestId("input-first-name");
-    this.lastName = page.getByTestId("input-last-name");
-    this.email = page.getByTestId("input-email");
-    this.phone = page.getByTestId("input-phone-number");
-    this.password = page.getByTestId("input-password");
-    this.registerBtn = page.getByTestId("btn-submit");
+    this.firstName = page.getByTestId(SignupPageLocators.firstName);
+    this.lastName = page.getByTestId(SignupPageLocators.lastName);
+    this.email = page.getByTestId(SignupPageLocators.email);
+    this.phone = page.getByTestId(SignupPageLocators.phone);
+    this.password = page.getByTestId(SignupPageLocators.password);
+    this.registerBtn = page.getByTestId(SignupPageLocators.registerBtn);
   }
 
   async navigate() {
@@ -46,27 +48,23 @@ export class SignupPage {
 
   async expectSuccessPopupMessage() {
     await expect(
-      this.page.getByRole("heading", { name: "Registration Successful!" })
+      this.page.getByRole("heading", { name: SignupPageLocators.popupTitle })
     ).toBeVisible();
 
     await expect(
-      this.page.getByText(
-        "Please check your email to confirm your registration.",
-        { exact: true }
-      )
+      this.page.getByText(SignupPageLocators.popupDescription, { exact: true })
     ).toBeVisible();
   }
 
   async expectErrorPopup(errorCode: string, expectedMessage: string) {
-    const errorTitle = this.page.locator("#swal2-title");
-    const errorMessage = this.page.locator("#swal2-html-container");
+    const errorTitle = this.page.locator(CommonPopupLocators.title);
+    const errorMessage = this.page.locator(CommonPopupLocators.message);
 
     await expect(errorTitle).toHaveText(`Error: ${errorCode}`);
-
     await expect(errorMessage).toContainText(expectedMessage);
   }
 
   async clickSuccessPopupOkButton() {
-    await this.page.getByRole("button", { name: "OK" }).click();
+    await this.page.locator(SignupPageLocators.confirmButton).click();
   }
 }

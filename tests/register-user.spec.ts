@@ -16,6 +16,7 @@ test("TC_REG_01:Register with valid data", async ({ page }) => {
   });
 
   await signup.expectSuccessPopupMessage();
+  await signup.clickSuccessPopupOkButton();
 });
 
 test("TC_REG_02:Register with an already used email	", async ({ page }) => {
