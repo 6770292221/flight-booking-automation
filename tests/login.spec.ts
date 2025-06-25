@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
-import { LoginPage } from "../pages/LoginPage";
-import { CommonPage } from "../pages/CommonPage";
+import { LoginPage } from "@pages/LoginPage";
+import { CommonPage } from "@pages/CommonPage";
+import { getOtpByUserId } from "@utils/redis/getEmailOtp";
 
 let login: LoginPage;
 let commonPage: CommonPage;
@@ -18,8 +19,16 @@ test.describe("Login Tests", () => {
 
   test.describe("Success Flow", () => {
     test("TC_LOGIN_01: Login with valid email, password, and OTP @smoke @regression", async () => {
-      await login.login("aphirak_2008@hotmail.com", "Com@sci54");
-      await login.confirmOtp("123456");
+      const userId = "6804a760601850de6fc4ede9";
+      const email = "aphirak_2008@hotmail.com";
+      const password = "Com@sci54";
+
+      await login.login(email, password);
+
+      const otp = await getOtpByUserId(userId);
+      console.log("OTP =", otp);
+
+      await login.confirmOtp(otp!);
       await login.expectLoginSuccess("imaikungki");
     });
   });

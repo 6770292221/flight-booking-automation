@@ -1,25 +1,27 @@
 import { test } from "@playwright/test";
-import { SignupPage } from "../pages/SignupPage";
-import { CommonPage } from "../pages/CommonPage";
+import { SignupPage } from "@pages/SignupPage";
+import { CommonPage } from "@pages/CommonPage";
+import { deleteUserByEmail } from "@utils/mongo/deleteUserByEmail";
 
 let signup: SignupPage;
 let commonPage: CommonPage;
+let email: string;
 
 test.describe("Register Tests", () => {
   test.beforeEach(async ({ page }) => {
+    email = "test@example.com";
     signup = new SignupPage(page);
     commonPage = new CommonPage(page);
     await signup.navigate();
   });
 
   test.afterEach(async ({}, testInfo) => {
+    await deleteUserByEmail(email);
     console.log(`Completed: ${testInfo.title}`);
   });
 
   test.describe("Success Cases", () => {
     test("TC_REG_01: Register with valid data @regression @smoke", async () => {
-      const email = `test${Date.now()}@example.com`;
-
       await signup.registerUser({
         firstName: "Test",
         lastName: "User",
