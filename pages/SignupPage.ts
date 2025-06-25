@@ -1,6 +1,5 @@
 import { Page, Locator, expect } from "@playwright/test";
 import { SignupPageLocators } from "../fixtures/locators/signup.page";
-import { CommonPopupLocators } from "../fixtures/locators/popup.locators";
 
 export class SignupPage {
   readonly page: Page;
@@ -54,14 +53,6 @@ export class SignupPage {
     await expect(
       this.page.getByText(SignupPageLocators.popupDescription, { exact: true })
     ).toBeVisible();
-  }
-
-  async expectErrorPopup(errorCode: string, expectedMessage: string) {
-    const errorTitle = this.page.locator(CommonPopupLocators.title);
-    const errorMessage = this.page.locator(CommonPopupLocators.message);
-
-    await expect(errorTitle).toHaveText(`Error: ${errorCode}`);
-    await expect(errorMessage).toContainText(expectedMessage);
   }
 
   async clickSuccessPopupOkButton() {
