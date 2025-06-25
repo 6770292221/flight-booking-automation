@@ -14,7 +14,7 @@ console.log(`ENV=${ENV} | BASE_URL=${baseURL}`);
 export default defineConfig({
   testDir: "./tests",
   use: {
-    headless: true,
+    headless: false,
     baseURL,
     screenshot: "only-on-failure",
     video: "retain-on-failure",
