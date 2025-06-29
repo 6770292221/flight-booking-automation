@@ -11,7 +11,8 @@
     "baseUrl": ".",
     "paths": {
       "@pages/*": ["pages/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@fixtures/*":["fixtures/*"]
     }
   }
 }

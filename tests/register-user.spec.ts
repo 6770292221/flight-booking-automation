@@ -2,6 +2,8 @@ import { test } from "@playwright/test";
 import { SignupPage } from "@pages/SignupPage";
 import { CommonPage } from "@pages/CommonPage";
 import { deleteUserByEmail } from "@utils/mongo/deleteUserByEmail";
+import { RegisterExpectedResult } from "@fixtures/expectedResult/register.expect";
+import { RegisterTestdata } from "@fixtures/testData/register.testdata";
 
 let signup: SignupPage;
 let commonPage: CommonPage;
@@ -22,14 +24,7 @@ test.describe("Register Tests", () => {
 
   test.describe("Success Cases", () => {
     test("TC_REG_01: Register with valid data @regression @smoke", async () => {
-      await signup.registerUser({
-        firstName: "Test",
-        lastName: "User",
-        email,
-        phone: "0812345678",
-        password: "Com@sci54",
-      });
-
+      await signup.registerUser(RegisterTestdata.VALID);
       await signup.expectSuccessPopupMessage();
       await signup.clickSuccessPopupOkButton();
     });
@@ -37,89 +32,61 @@ test.describe("Register Tests", () => {
 
   test.describe("Fail Cases", () => {
     test("TC_REG_02: Email already used @regression", async () => {
-      await signup.registerUser({
-        firstName: "Any",
-        lastName: "Name",
-        email: "maicomsci54@gmail.com",
-        phone: "0812345678",
-        password: "Com@sci54",
-      });
-
-      await commonPage.expectErrorPopup(
-        "REG_1005",
-        "Email Already Exists: The email already exists in the system."
-      );
+      const { code, message } = RegisterExpectedResult.DUPLICATE_EMAIL;
+      await signup.registerUser(RegisterTestdata.DUPLICATE_EMAIL);
+      await commonPage.expectErrorPopup(code, message);
     });
 
     test("TC_REG_03: Weak password format @regression", async () => {
       const email = `weakpass${Date.now()}@example.com`;
-
-      await signup.registerUser({
-        firstName: "Weak",
-        lastName: "Password",
-        email,
-        phone: "0812345678",
-        password: "abc123",
-      });
-
-      await commonPage.expectErrorPopup(
-        "REG_1006",
-        `Password must meet the following requirements: 1. Length between 8 and 20 characters, 2. At 
-least one uppercase letter (A-Z), 3. At least one lowercase letter (a-z), 4. At
-least one number (0-9), 5. At least 
-one special character (e.g., !@#$%^&*(),.?":{}|<>).`
-      );
+      const { code, message } = RegisterExpectedResult.WEAK_PASSWORD;
+      await signup.registerUser(RegisterTestdata.WEAK_PASSWORD(email));
+      await commonPage.expectErrorPopup(code, message);
     });
 
     test("TC_REG_04: Invalid phone format @regression", async () => {
       const invalidPhone = "0814939873344343434343";
+      const { code, message } =
+        RegisterExpectedResult.INVALID_FORMAT(invalidPhone);
 
-      await signup.registerUser({
-        firstName: "Test",
-        lastName: "PhoneFormat",
-        email: `invalidphone${Date.now()}@example.com`,
-        phone: invalidPhone,
-        password: "Com@sci54",
-      });
-
-      await commonPage.expectErrorPopup(
-        "REG_1003",
-        `Invalid Formats: ${invalidPhone}`
+      await signup.registerUser(
+        RegisterTestdata.INVALID_PHONE(
+          `phone${Date.now()}@mail.com`,
+          invalidPhone
+        )
       );
+
+      await commonPage.expectErrorPopup(code, message);
     });
 
     test("TC_REG_05: Invalid first name @regression", async () => {
       const invalidName = "John123";
+      const { code, message } =
+        RegisterExpectedResult.INVALID_FORMAT(invalidName);
 
-      await signup.registerUser({
-        firstName: invalidName,
-        lastName: "User",
-        email: `nameformat${Date.now()}@mail.com`,
-        phone: "0812345678",
-        password: "Com@sci54",
-      });
-
-      await commonPage.expectErrorPopup(
-        "REG_1003",
-        `Invalid Formats: ${invalidName}`
+      await signup.registerUser(
+        RegisterTestdata.INVALID_PHONE(
+          `phone${Date.now()}@mail.com`,
+          invalidName
+        )
       );
+
+      await commonPage.expectErrorPopup(code, message);
     });
 
     test("TC_REG_06: Invalid last name @regression", async () => {
       const invalidLastName = "Smith123!";
+      const { code, message } =
+        RegisterExpectedResult.INVALID_FORMAT(invalidLastName);
 
-      await signup.registerUser({
-        firstName: "Valid",
-        lastName: invalidLastName,
-        email: `lastname${Date.now()}@mail.com`,
-        phone: "0812345678",
-        password: "Com@sci54",
-      });
-
-      await commonPage.expectErrorPopup(
-        "REG_1003",
-        `Invalid Formats: ${invalidLastName}`
+      await signup.registerUser(
+        RegisterTestdata.INVALID_PHONE(
+          `phone${Date.now()}@mail.com`,
+          invalidLastName
+        )
       );
+
+      await commonPage.expectErrorPopup(code, message);
     });
   });
 });
