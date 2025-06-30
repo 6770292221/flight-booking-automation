@@ -18,7 +18,7 @@ test.describe("Register Tests", () => {
   });
 
   test.afterEach(async ({}, testInfo) => {
-    await deleteUserByEmail(email);
+    await deleteUserByEmail(RegisterTestdata.VALID.email);
     console.log(`Completed: ${testInfo.title}`);
   });
 

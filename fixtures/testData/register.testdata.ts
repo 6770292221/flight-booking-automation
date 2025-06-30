@@ -2,7 +2,7 @@ export const RegisterTestdata = {
   VALID: {
     firstName: "Test",
     lastName: "User",
-    email: "test@example.com",
+    email: "testss44aa0@example.com",
     phone: "0812345678",
     password: "Com@sci54",
   },
