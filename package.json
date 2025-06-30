@@ -6,7 +6,9 @@
   "scripts": {
     "test:dev": "ENV=dev npx playwright test --ui",
     "test:staging": "ENV=staging npx playwright test --ui",
-    "test:prod": "ENV=prod npx playwright test --ui"
+    "test:prod": "ENV=prod npx playwright test --ui",
+    "test:smoke": "ENV=prod npx playwright test --grep '@smoke' --ui",
+    "test:regression": "ENV=prod npx playwright test --grep '@regression' --ui"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,8 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.5.0",
+    "mongodb": "^6.17.0",
+    "redis": "^5.5.6"
   }
 }
